@@ -1,7 +1,7 @@
-import { cheerio } from "https://deno.land/x/cheerio/mod.ts";
-import { default as format } from "https://deno.land/x/date_fns/format/index.js";
-import { default as fr } from "https://deno.land/x/date_fns/locale/fr/index.js";
-import { default as parse } from "https://deno.land/x/date_fns/parse/index.js";
+import { cheerio } from "https://deno.land/x/cheerio@1.0.4/mod.ts";
+import { default as format } from "https://deno.land/x/date_fns@v2.22.1/format/index.js";
+import { default as fr } from "https://deno.land/x/date_fns@v2.22.1/locale/fr/index.js";
+import { default as parse } from "https://deno.land/x/date_fns@v2.22.1/parse/index.js";
 
 addEventListener("fetch", async (event) => {
   const data = await fetchData();
@@ -9,6 +9,7 @@ addEventListener("fetch", async (event) => {
   const response = new Response(json, {
     headers: { "content-type": "application/json; charset=UTF-8" },
   });
+  // @ts-ignore-next-line
   event.respondWith(response);
 });
 
@@ -22,16 +23,16 @@ async function fetchData() {
   const version = $("table strong").first().text().trim();
   const url = $("table strong a").attr("href");
 
-  const [, raw_build, , day, month, year] = version.split(" ");
+  const [, build, , day, month, year] = version.split(" ");
 
-  const dirtyOptions = new Date();
-  const raw_date: Date = parse(
+  const defaultDate = new Date();
+  const parsedDate: Date = parse(
     `${day}-${month}-${year}`,
     "d-LLLL-y",
-    dirtyOptions,
+    defaultDate,
     { locale: fr }
   );
-  const date: string = format(raw_date, "yyyy-MM-dd", dirtyOptions);
+  const date = format(parsedDate, "yyyy-MM-dd", defaultDate);
 
-  return { version: raw_build, date, url };
+  return { version: build, date, url };
 }
