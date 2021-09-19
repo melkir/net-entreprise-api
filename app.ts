@@ -1,7 +1,7 @@
-import { DOMParser } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
-import { default as parse } from "https://deno.land/x/date_fns/parse/index.js";
+import { cheerio } from "https://deno.land/x/cheerio/mod.ts";
 import { default as format } from "https://deno.land/x/date_fns/format/index.js";
 import { default as fr } from "https://deno.land/x/date_fns/locale/fr/index.js";
+import { default as parse } from "https://deno.land/x/date_fns/parse/index.js";
 
 addEventListener("fetch", async (event) => {
   const data = await fetchData();
@@ -17,11 +17,10 @@ async function fetchData() {
     "https://www.net-entreprises.fr/declaration/outils-de-controle-dsn-val/"
   );
   const html = await res.text();
-  const doc: any = new DOMParser().parseFromString(html, "text/html");
 
-  const version = doc
-    .querySelector("table")
-    .querySelector("strong").textContent;
+  const $ = cheerio.load(html);
+  const version = $("table strong").first().text().trim();
+  const url = $("table strong a").attr("href");
 
   const [, raw_build, , day, month, year] = version.split(" ");
 
@@ -34,11 +33,5 @@ async function fetchData() {
   );
   const date: string = format(raw_date, "yyyy-MM-dd", dirtyOptions);
 
-  const href = doc
-    .querySelector("table")
-    .querySelectorAll("strong")[3]
-    .querySelector("a")
-    .getAttribute("href");
-
-  return { version: raw_build, date, url: href };
+  return { version: raw_build, date, url };
 }
