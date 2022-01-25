@@ -20,8 +20,8 @@ async function fetchData() {
   const html = await res.text();
 
   const $ = cheerio.load(html);
-  const version = $("table strong").first().text().trim();
-  const url = $("table strong a").attr("href");
+  const version = $("strong:contains('Version 20')").last().text()
+  const url = $("strong:contains('Dsn-Val pour Linux 64 bits')").last().children().attr("href")
 
   const [, build, , day, month, year] = version.split(" ");
 
@@ -36,3 +36,5 @@ async function fetchData() {
 
   return { version: build, date, url };
 }
+
+console.log("hello")
