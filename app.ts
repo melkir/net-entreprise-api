@@ -5,10 +5,11 @@ import { default as fr } from "https://deno.land/x/date_fns@v2.22.1/locale/fr/in
 import { default as parse } from "https://deno.land/x/date_fns@v2.22.1/parse/index.js";
 
 async function fetchData() {
-  const res = await fetch(
-    "https://www.net-entreprises.fr/declaration/outils-de-controle-dsn-val/",
-  );
-  const html = await res.text();
+  // const res = await fetch(
+  //   "https://www.net-entreprises.fr/declaration/outils-de-controle-dsn-val/",
+  // );
+  // const html = await res.text();
+  const html = await Deno.readTextFile("./page.html");
 
   const $ = cheerio.load(html);
   const version = $("strong:contains('Version 20')").last().text();
