@@ -12,15 +12,21 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
 
-      - name: Fetch net-entreprises
+      - run: brew install htmlq
+
+      - name: Checks for updates
         run: |
-          curl -k https://www.net-entreprises.fr/declaration/outils-de-controle-dsn-val/ > page.html
+          page=$(curl -s -k https://www.net-entreprises.fr/declaration/outils-de-controle-dsn-val/)
+          url=$(echo $page | htmlq 'strong' --attribute href a | tail -1 | sed 's/ *$//g')
+          version=$(echo $page | htmlq 'strong' --text | grep "Version 20" | tail -1 | sed 's/ *$//g')
+          json=$(jq -n --arg version "$version" --arg url "$url" '{version: $version, url: $url}')
+          echo $json > data.json
 
       - name: Commit changed files
         uses: stefanzweifel/git-auto-commit-action@v2.3.0
         with:
           commit_message: Apply net-entreprises changes
           branch: main
-          file_pattern: page.html
+          file_pattern: data.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
