@@ -15,6 +15,7 @@ jobs:
       - name: Enable Homebrew
         uses: raviqqe/enable-homebrew@v0.1.0
 
+      - run: brew update
       - run: brew install htmlq
 
       - name: Checks for updates
