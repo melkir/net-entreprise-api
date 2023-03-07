@@ -12,8 +12,9 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
 
-      - name: Enable Homebrew
-        uses: raviqqe/enable-homebrew@v0.1.0
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@master
 
       - run: brew update
       - run: brew install htmlq
