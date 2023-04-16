@@ -1,7 +1,7 @@
 name: Fetch latest information
 on:
   schedule:
-    - cron: "0 */4 * * *" # run once every 4 hours
+    - cron: "0 9 * * *"
   workflow_dispatch:
     inputs: {}
 
