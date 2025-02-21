@@ -1,25 +1,35 @@
-import { serve } from "https://deno.land/std@0.134.0/http/server.ts";
-import { default as format } from "https://deno.land/x/date_fns@v2.22.1/format/index.js";
-import { default as fr } from "https://deno.land/x/date_fns@v2.22.1/locale/fr/index.js";
-import { default as parse } from "https://deno.land/x/date_fns@v2.22.1/parse/index.js";
-
-import data from "./data.json" assert { type: "json" };
+import data from "./data.json" with { type: "json" };
 
 console.log("Listening on http://localhost:8000");
-await serve(() => {
-  const { url, version } = data;
-  const [, build, , day, month, year] = version.split(" ");
-  const defaultDate = new Date();
-  const parsedDate: Date = parse(
-    `${day}-${month}-${year}`,
-    "d-LLLL-y",
-    defaultDate,
-    { locale: fr },
-  );
-  const date = format(parsedDate, "yyyy-MM-dd", defaultDate);
 
-  return new Response(
-    JSON.stringify({ version: build, date, url }),
-    { headers: { "content-type": "application/json; charset=UTF-8" } },
-  );
+Deno.serve(() => {
+	const { url, version } = data;
+	const [, build, , day, month, year] = version.split(" ");
+
+	// Convert month name to number (French months)
+	const monthNames = [
+		"janvier",
+		"février",
+		"mars",
+		"avril",
+		"mai",
+		"juin",
+		"juillet",
+		"août",
+		"septembre",
+		"octobre",
+		"novembre",
+		"décembre",
+	];
+
+	const monthNumber = (monthNames.indexOf(month.toLowerCase()) + 1)
+		.toString()
+		.padStart(2, "0");
+
+	// Create date string in yyyy-MM-dd format
+	const date = `${year}-${monthNumber}-${day.padStart(2, "0")}`;
+
+	return new Response(JSON.stringify({ version: build, date, url }), {
+		headers: { "content-type": "application/json; charset=UTF-8" },
+	});
 });
