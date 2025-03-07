@@ -22,8 +22,8 @@ jobs:
       - name: Checks for updates
         run: |
           page=$(curl -s -k https://www.net-entreprises.fr/declaration/outils-de-controle-dsn-val/)
-          url=$(echo "$page" | htmlq 'strong' --attribute href a | tail -1 | sed 's/[[:blank:]]*$//')
-          version=$(echo "$page" | htmlq 'strong' --text | grep "Version 20" | tail -1 | sed 's/[[:blank:]]*$//')
+          url=$(echo "$page" | htmlq 'strong' --attribute href a | tail -1 | awk '{gsub(/[[:space:]]*$/,""); print}')
+          version=$(echo "$page" | htmlq 'strong' --text | grep "Version 20" | tail -1 | awk '{gsub(/[[:space:]]*$/,""); print}')
           json=$(jq -n --arg version "$version" --arg url "$url" '{version: $version, url: $url}')
           echo $json > data.json
 
