@@ -28,7 +28,7 @@ jobs:
           echo $json > data.json
 
       - name: Commit changed files
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v6
         with:
           commit_message: Apply net-entreprises changes
           branch: main
