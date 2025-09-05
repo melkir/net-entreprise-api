@@ -1,7 +1,9 @@
-name: Fetch latest information
+# DEPRECATED: This workflow has been disabled to save resources
+# Project has been deprecated in favor of https://github.com/melkir/net-entreprise-scraper
+name: Fetch latest information (DISABLED)
 on:
-  schedule:
-    - cron: "0 9 * * *"
+  # schedule:
+  #   - cron: "0 9 * * *"
   workflow_dispatch:
     inputs: {}
 
